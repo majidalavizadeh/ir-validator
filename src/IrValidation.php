@@ -1,0 +1,124 @@
+<?php
+
+namespace Majida\IrValidator;
+
+use Illuminate\Validation\Validator;
+
+
+/**
+ * Class IrValidator
+ * @package Majida\IrValidator
+ */
+class IrValidator extends Validator
+{
+
+    /**
+     *
+     * Validate Iranian National Code
+     *
+     * @param $attribute
+     * @param $code
+     * @param $parameters
+     * @return bool
+     */
+    public function validateNationalCode($attribute, $code, $parameters)
+    {
+        if (empty($code)) {
+            return true;
+        }
+        $sum = 0;
+
+        $invalidCodes = [
+            '0000000000',
+            '1111111111',
+            '2222222222',
+            '3333333333',
+            '4444444444',
+            '5555555555',
+            '6666666666',
+            '7777777777',
+            '8888888888',
+            '9999999999'
+        ];
+
+        // Check for invalid codes
+        if ($code < 1 || in_array($code, $invalidCodes)) {
+            return false;
+        }
+
+        // Add zero to first of code if needed
+        $code = str_pad($code, 10, '0', STR_PAD_LEFT);
+
+        // Select control digit
+        $check_number = substr($code, 9, 1);
+
+        // Multiply the sum of the numbers 2 to 10 positions are calculated
+        $multiplication = 2;
+        for ($i = 8; $i >= 0; $i--) {
+            $sum += substr($code, $i, 1) * $multiplication++;
+        }
+
+        $remain = $sum % 11;
+
+        // Check code
+        if (($remain < 2 && $check_number == $remain) || ($remain >= 2 && $check_number == (11 - $remain))) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
+    /**
+     *
+     * Validate IBAN (Sheba) account number
+     *
+     * @param $attribute
+     * @param $account
+     * @param $parameters
+     * @return bool
+     */
+    public function validateIban($attribute, $account, $parameters)
+    {
+        $account_number = $account;
+
+        // The codes of IBAN standard characters
+        $character_map = [
+            10 => 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        ];
+
+        // Check for account country code and add if there is no exists
+        if (!empty($parameters[0]) && $parameters[0] == 'false') {
+            if (isset($parameters[1]) && strlen($parameters[1]) == 2) {
+                $account_number = $parameters[1] . $account;
+            } else {
+                $account_number = 'IR' . $account;
+            }
+        }
+
+        // Validate length of IBAN digits
+        $iban_digits = substr($account_number, 2);
+        if (!is_numeric($iban_digits) || strlen($iban_digits) != 24) {
+            return false;
+        }
+
+        // Convert country characters to digit
+        $country_chracters = substr($account_number, 0, 2);
+        $characters_code = array_map(function($chr) use ($character_map) {
+            return array_search(strtoupper($chr), $character_map);
+        }, str_split($country_chracters));
+        $country_code = implode('', $characters_code);
+
+        // Place country digits to end of account number
+        $new_iban_number = substr($iban_digits, 2) . $country_code . substr($iban_digits, 0, 2);
+
+        // Check the mod
+        $check_digits = bcmod($new_iban_number, 97);
+
+        // Finally, return the validation result
+        return (int)$check_digits === 1 ? true : false;
+    }
+
+
+}
