@@ -4,7 +4,6 @@ namespace Majida\IrValidator;
 
 use Illuminate\Validation\Validator;
 
-
 /**
  * Class IrValidator
  * @package Majida\IrValidator
@@ -69,7 +68,6 @@ class IrValidator extends Validator
 
     }
 
-
     /**
      *
      * Validate IBAN (Sheba) account number
@@ -120,5 +118,63 @@ class IrValidator extends Validator
         return (int)$check_digits === 1 ? true : false;
     }
 
+    /**
+     *
+     * Validate Iranian debit card numbers
+     *
+     * @param $attribute
+     * @param $account
+     * @param $parameters
+     * @return bool
+     */
+    public function validateDebitCard($attribute, $card_number, $parameters)
+    {
+        $card_length = strlen($card_number);
+        if ($card_length < 16 || substr($card_number, 1, 10) == 0 || substr($card_number, 10, 6) == 0) {
+            return false;
+        }
+
+        $banks_names = [
+            'bmi'           => '603799',
+            'banksepah'     => '589210',
+            'edbi'          => '627648',
+            'bim'           => '627961',
+            'bki'           => '603770',
+            'bank-maskan'   => '628023',
+            'postbank'      => '627760',
+            'ttbank'        => '502908',
+            'enbank'        => '627412',
+            'parsian-bank'  => '622106',
+            'bpi'           => '502229',
+            'karafarinbank' => '627488',
+            'sb24'          => '621986',
+            'sinabank'      => '639346',
+            'sbank'         => '639607',
+            'shahr-bank'    => '502806',
+            'bank-day'      => '502938',
+            'bsi'           => '603769',
+            'bankmellat'    => '610433',
+            'tejaratbank'   => '627353',
+            'refah-bank'    => '589463',
+            'ansarbank'     => '627381',
+            'mebank'        => '639370',
+        ];
+
+        if (isset($parameters[0]) && (!isset($banks_names[$parameters[0]]) || substr($card_number, 0, 6) != $banks_names[$parameters[0]])) {
+            return false;
+        }
+
+        $c = (int) substr($card_number, 15, 1);
+        $s = 0;
+        $k = null;
+        $d = null;
+        for ($i = 0; $i < 16; $i++) {
+            $k = ($i % 2 == 0) ? 2 : 1;
+            $d = (int) substr($card_number, $i, 1) * $k;
+            $s += ($d > 9) ? $d - 9 : $d;
+        }
+
+        return (($s % 10) == 0);
+    }
 
 }

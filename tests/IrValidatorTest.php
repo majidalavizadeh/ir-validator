@@ -47,4 +47,22 @@ class IrValidatorTest extends TestCase
 
         $this->assertFalse($validation->fails());
     }
+
+    /**
+     * debit card number test case
+     *
+     * @return void
+     */
+    public function testDebitCard()
+    {
+        $values = [
+            'card_number' => '1111111111111111'
+        ];
+
+        $validation = Validator::make($values, [
+            'card_number' => 'debit_card'
+        ]);
+
+        $this->assertFalse($validation->fails());
+    }
 }
