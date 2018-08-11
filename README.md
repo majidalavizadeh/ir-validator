@@ -1,3 +1,4 @@
+
 # Iranian Validator
 A laravel package for validate some Iranian values.
 
@@ -5,6 +6,7 @@ A laravel package for validate some Iranian values.
 This package verify these values now :
 - National Code (کدملی)
 - IBAN (شماره شبا)
+- Debit Card (شماره کارت بانکی)
 
 ## Installation ##
 1) Run the command below to install via Composer
@@ -57,7 +59,52 @@ return [
     'account' => 'iban:false,DE'
 ];
 ```
- 
+ - `debit_card`
+
+A rule for validating Iranian debit cards. [(How calculated)](http://www.aliarash.com/article/creditcart/credit-debit-cart.htm)
+```php
+return [
+    'code' => 'required|debit_card'
+];
+```
+--OR--
+```php
+ $validatedData = $request->validate([
+    'code' => 'debit_card',
+]);
+```
+You can add an optional parameter if you want to validate a card from a specific bank:
+```php
+return [
+    'code' => 'required|debit_card:bmi'
+];
+```
+List of the bank codes:
+
+ - bmi (بانک ملی)
+ - banksepah (بانک سپه)
+ - edbi (بانک توصعه صادرات)
+ - bim (بانک صنعت و معدن)
+ - bki (بانک کشاورزی)
+ - bank-maskan (بانک مسکن)
+ - postbank (پست بانک ایران)
+ - ttbank (بانک توسعه تعاون)
+ - enbank (بانک اقتصاد نوین)
+ - parsian-bank (بانک پارسیان)
+ - bpi (بانک پاسارگاد)
+ - karafarinbank (بانک کارآفرین)
+ - sb24 (بانک سامان)
+ - sinabank (بانک سینا)
+ - sbank (بانک سرمایه)
+ - shahr-bank (بانک شهر)
+ - bank-day (بانک دی)
+ - bsi (بانک صادرات)
+ - bankmellat (بانک ملت)
+ - tejaratbank (بانک تجارت)
+ - refah-bank (بانک رفاه)
+ - ansarbank (بانک انصار)
+ - mebank (بانک مهر اقتصاد)
+
  ## Contribute ##
  Contributions to the package are always welcome!
  
@@ -66,3 +113,4 @@ return [
  
  ## License ##
  All contents of this package are licensed under the [MIT license](https://github.com/majidalavizadeh/ir-validator/blob/master/LICENSE.md).
+
