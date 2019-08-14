@@ -177,4 +177,20 @@ class IrValidator extends Validator
         return (($s % 10) == 0);
     }
 
+    /**
+     *
+     * Validate Iranian Postal Code
+     *
+     * @param $attribute
+     * @param $code
+     * @param $parameters
+     * @return bool
+     */
+    public function validatePostalCode($attribute, $code, $parameters)
+    {
+        $status = (bool) preg_match("/^([13456789]{10})$/", $code);
+
+        return $status;
+    }
+
 }

@@ -7,6 +7,7 @@ This package verify these values now :
 - National Code (کدملی)
 - IBAN (شماره شبا)
 - Debit Card (شماره کارت بانکی)
+- Postal Code (کد پستی)
 
 ## Installation ##
 1) Run the command below to install via Composer
@@ -104,6 +105,20 @@ List of the bank codes:
  - refah-bank (بانک رفاه)
  - ansarbank (بانک انصار)
  - mebank (بانک مهر اقتصاد)
+
+- `postal_code`
+
+```php
+return [
+    'code' => 'required|postal_code'
+];
+```
+--OR--
+```php
+ $validatedData = $request->validate([
+    'code' => 'postal_code',
+]);
+```
 
  ## Contribute ##
  Contributions to the package are always welcome!

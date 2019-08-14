@@ -65,4 +65,22 @@ class IrValidatorTest extends TestCase
 
         $this->assertFalse($validation->fails());
     }
+
+    /**
+     * Postal Code Test Case
+     *
+     * @return void
+     */
+    public function testPostalCode()
+    {
+        $values = [
+            'postal_code' => '1234512345'
+        ];
+
+        $validation = Validator::make($values, [
+            'postal_code' => 'postal_code'
+        ]);
+
+        $this->assertFalse($validation->fails());
+    }
 }
