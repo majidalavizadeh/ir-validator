@@ -36,7 +36,7 @@ class IrValidatorServiceProvider extends ServiceProvider
             'national_code' => 'The :attribute is not a valid Iranian national code.',
             'iban' => 'The :attribute is not a valid IBAN account number.',
             'debit_card' => 'The :attribute is not a valid debit card number.',
-            'postal_code' => 'The :attribute is not a valid debit postal code.',
+            'postal_code' => 'The :attribute is not a valid postal code.',
         ];
     }
 
